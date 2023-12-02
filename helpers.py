@@ -91,8 +91,6 @@ def process_chapter(chapter, work_dir, download_images=True):
     chapter_dir = os.path.join(work_dir, f"chapter_{chapter.id}")
     os.makedirs(chapter_dir, exist_ok=True)
 
-    print(f'Downloading Chapter {chapter.id}, {chapter.name}, URL: {chapter.url_link}')
-
     for page in chapter.pages:
         image_url = page.src
         image_filename = f'{page.number}.jpg'
@@ -100,7 +98,6 @@ def process_chapter(chapter, work_dir, download_images=True):
 
         if download_images:
             NU.download_image(image_url, image_path)
-            print(f'  Downloaded page {page.number}: {image_filename}')
         else:
             print(f'  Image URL for page {page.number}: {image_url}')
 

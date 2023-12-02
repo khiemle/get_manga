@@ -32,8 +32,6 @@ def create_pdf_with_images(top_left, top_right, image_folder, output_path, thumb
     # Generate PDF from HTML content
     pdfkit.from_string(html_content, output_path, options=options)
 
-    print(f'PDF created at: {output_path}')
-
 def extract_number_from_filename(filename):
     # Assuming the filename format is "page_<number>.jpg"
     prefix, number = filename.split("_", 1)

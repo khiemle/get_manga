@@ -13,6 +13,5 @@ def download_image(image_link, save_path="image.jpg", headers=NetTruyenUsHeaders
         # Save the image to a file
         with open(save_path, "wb") as file:
             file.write(image_content)
-            print(f"Image downloaded successfully and saved as {save_path}.")
     else:
-        print(f"Failed to download image. Status code: {response.status_code}")
+        print(f"Failed to download image {image_link}. Status code: {response.status_code}")

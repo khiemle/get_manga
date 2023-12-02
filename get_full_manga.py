@@ -34,14 +34,17 @@ work_dir = f'/Users/khle/Workspace/Projects/py_auto/workspace/{manga.name}'
 thumbnail = f'{work_dir}/{thumbnail_file_name}'
 NU.download_image(manga.thumbnail_url, save_path=thumbnail, headers=NetTruyenUsHeaders)
 
+print(f'Get all pages of each chapter...')
 for chapter in manga.chapters[start_index:end_index+1]:
     print(f' Processing {chapter.id}, {chapter.name}, URL: {chapter.url_link}')
     pages = helpers.get_pages_of_chapter(url=chapter.url_link)
     chapter.add_pages(pages)
+    print(f' Finished chapter {chapter.id}')
 
+print(f'Download and create pdf...')
 for chapter in manga.chapters[start_index:end_index+1]:
-    print(f'start chapter {chapter.id}')
     helpers.process_chapter(chapter, work_dir, download_images=True)
+    print(f' Downloaded {len(chapter.pages)} images of Chapter {chapter.id}')
     chapter_dir = f'{work_dir}/chapter_{chapter.id}'
     EU.create_pdf_with_images(
         top_left=manga.display_name,
@@ -52,5 +55,6 @@ for chapter in manga.chapters[start_index:end_index+1]:
         author=manga.author,
         detail_content=manga.detail_content
     )
+    print(f' PDF created at: {chapter_dir}.pdf')
     OU.delete_directory(chapter_dir)
-    print(f'finished chapter {chapter.id}')
+    print(f' Deleted all downloaded images in {chapter_dir} of {chapter.id}')

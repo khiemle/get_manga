@@ -18,6 +18,5 @@ def create_manga_folder(manga):
 def delete_directory(directory):
     try:
         shutil.rmtree(directory)
-        print(f'Deleted directory: {directory}')
     except OSError as e:
         print(f'Error deleting directory {directory}: {e}')
