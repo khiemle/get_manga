@@ -8,12 +8,11 @@ from models.page import Page
 from models.chapter import Chapter
 from models.manga import Manga
 import os
-import utils.os_utils as OU
-import utils.ebook_utils as EU
 import utils.network_utils as NU
 import utils.common_utils as CU
+from typing import List
 
-def get_pages_of_chapter(url):
+def get_pages_of_chapter(url) -> List[Page]:
     options = Options()
     options.headless = False
     # Create a Chrome WebDriver instance
@@ -30,9 +29,9 @@ def get_pages_of_chapter(url):
     containers = driver.find_elements(by="xpath", value="//div[@class='page-chapter']")
 
     pageList = []
-    for container in containers:
+    for index,container in enumerate(containers):
         src = container.find_element(by="xpath", value="./img").get_attribute("src")
-        number = container.get_attribute("id")
+        number = f'page_{index}'
         pageList.append(Page(src, number))
 
     # Quit the WebDriver
@@ -40,7 +39,7 @@ def get_pages_of_chapter(url):
 
     return pageList
 
-def get_manga(url):
+def get_manga(url) -> Manga:
     options = Options()
     options.headless = False
     # Create a Chrome WebDriver instance
@@ -91,35 +90,4 @@ def process_chapter(chapter, work_dir, download_images=True):
         else:
             print(f'  Image URL for page {page.number}: {image_url}')
 
-# ===================
-url = "https://www.nettruyenus.com/truyen-tranh/doc-thoai-cua-nguoi-duoc-si-178400"
-manga = get_manga(url)
-
-print(f'Manga: {manga.name}')
-OU.create_manga_folder(manga)
-
-work_dir = f'/Users/khle/Workspace/Projects/py_auto/workspace/{manga.name}'
-for chapter in manga.chapters:
-    print(f' Processing {chapter.id}, {chapter.name}, URL: {chapter.url_link}')
-    pages = get_pages_of_chapter(url=chapter.url_link)
-    chapter.add_pages(pages)
-
-for chapter in manga.chapters:
-    print(f'start chapter {chapter.id}')
-    list_image_urls = []
-    for page in chapter.pages:
-        list_image_urls.append(page.src)
-
-    process_chapter(chapter, work_dir, download_images=True)
-
-    chapter_dir = f'{work_dir}/chapter_{chapter.id}'
-
-    EU.create_pdf_with_images(
-        title=chapter.id,
-        author="Khiem Le",
-        image_folder=chapter_dir,
-        output_path=f'{chapter_dir}.pdf'
-    )
-    OU.delete_directory(chapter_dir)
-    print(f'finished chapter {chapter.id}')
 
