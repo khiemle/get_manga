@@ -15,7 +15,10 @@ from typing import List
 
 def get_pages_of_chapter(url) -> List[Page]:
     options = Options()
-    options.headless = False
+    options.headless = True
+    options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--disable-extensions")
     # Create a Chrome WebDriver instance
     driver = webdriver.Chrome(options=options)
 
@@ -42,7 +45,10 @@ def get_pages_of_chapter(url) -> List[Page]:
 
 def get_manga(url) -> Manga:
     options = Options()
-    options.headless = False
+    options.headless = True
+    options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--disable-extensions")
     # Create a Chrome WebDriver instance
     driver = webdriver.Chrome(options=options)
 
