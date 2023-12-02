@@ -10,6 +10,7 @@ from models.manga import Manga
 import os
 import utils.network_utils as NU
 import utils.common_utils as CU
+import utils.selenium_utils as SU
 from typing import List
 
 def get_pages_of_chapter(url) -> List[Page]:
@@ -51,6 +52,10 @@ def get_manga(url) -> Manga:
     # Wait for the elements to be present
     WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, "//div[@class='col-xs-5 chapter']")))
 
+    author = SU.get_text_by_xpath(driver=driver, xpath="//li[@class='author row']//a")
+    status = SU.get_text_by_xpath(driver=driver, xpath="//li[@class='status row']//p[@class='col-xs-8']")
+    display_name = SU.get_text_by_xpath(driver=driver, xpath="//h1[@class='title-detail']")
+    thumbnail_url = SU.get_attribute_by_xpath(driver=driver, xpath="//div[@class='col-xs-4 col-image']//img", attribute="src")
 
     # Find elements with the specified XPath
     containers = driver.find_elements(by="xpath", value="//div[@class='col-xs-5 chapter']")
@@ -59,7 +64,7 @@ def get_manga(url) -> Manga:
     # href_list = [container.find_element(by="xpath", value="./a").get_attribute("href") for container in containers]
 
     # Create a Manga object
-    manga = Manga(name=CU.get_manga_name_from_url(url), url_link=url)
+    manga = Manga(name=CU.get_manga_name_from_url(url), url_link=url, author=author, status=status, display_name=display_name, thumbnail_url=thumbnail_url)
 
     # Extract and add Chapter objects to the Manga
     for container in containers:
@@ -67,6 +72,8 @@ def get_manga(url) -> Manga:
         chapter_url = container.find_element(by="xpath", value="./a").get_attribute("href")
         chapter = Chapter(id=CU.get_chapter_id_from_url(chapter_url),name=chapter_name, url_link=chapter_url)
         manga.add_chapter(chapter)
+
+    manga.print_manga_details()
 
     # Quit the WebDriver
     driver.quit()

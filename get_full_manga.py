@@ -1,5 +1,7 @@
 import utils.os_utils as OU
 import utils.ebook_utils as EU
+import utils.network_utils as NU
+from configs.nettruyenus_config import HEADERS as NetTruyenUsHeaders
 import helpers 
 
 # Get manga URL from the user
@@ -18,34 +20,36 @@ start_index = int(input("Enter the start index of the chapter: "))
 end_index = int(input("Enter the end index of the chapter: "))
 
 # Check indices validity
-if not 1 <= start_index <= len(manga.chapters) or not 1 <= end_index <= len(manga.chapters):
+if not 0 <= start_index < len(manga.chapters) or not 0 <= end_index < len(manga.chapters):
     print("Invalid indices. Exiting.")
     exit()
 
 # ===================
-
-# ===================
-# url = "https://www.nettruyenus.com/truyen-tranh/doc-thoai-cua-nguoi-duoc-si-178400"
-# manga = helpers.get_manga(url)
-
 print(f'Manga: {manga.name}')
 OU.create_manga_folder(manga)
 
+thumbnail_file_name = "thumbnail.jpg"
+
 work_dir = f'/Users/khle/Workspace/Projects/py_auto/workspace/{manga.name}'
-for chapter in manga.chapters[start_index-1:end_index]:
+thumbnail = f'{work_dir}/{thumbnail_file_name}'
+NU.download_image(manga.thumbnail_url, save_path=thumbnail, headers=NetTruyenUsHeaders)
+
+for chapter in manga.chapters[start_index:end_index+1]:
     print(f' Processing {chapter.id}, {chapter.name}, URL: {chapter.url_link}')
     pages = helpers.get_pages_of_chapter(url=chapter.url_link)
     chapter.add_pages(pages)
 
-for chapter in manga.chapters[start_index-1:end_index]:
+for chapter in manga.chapters[start_index:end_index+1]:
     print(f'start chapter {chapter.id}')
     helpers.process_chapter(chapter, work_dir, download_images=True)
     chapter_dir = f'{work_dir}/chapter_{chapter.id}'
     EU.create_pdf_with_images(
-        title=chapter.id,
-        author="Khiem Le",
+        top_left=manga.display_name,
+        top_right=chapter.name,
         image_folder=chapter_dir,
-        output_path=f'{chapter_dir}.pdf'
+        output_path=f'{chapter_dir}.pdf',
+        thumbnail_path=thumbnail,
+        author=manga.author
     )
     OU.delete_directory(chapter_dir)
     print(f'finished chapter {chapter.id}')
