@@ -1,5 +1,5 @@
 class Manga:
-    def __init__(self, name, url_link, author=None, display_name=None, thumbnail_url=None, status=None):
+    def __init__(self, name, url_link, author=None, display_name=None, thumbnail_url=None, status=None, detail_content=None):
         self.name = name
         self.url_link = url_link
         self.author = author
@@ -7,6 +7,7 @@ class Manga:
         self.thumbnail_url = thumbnail_url
         self.status = status
         self.chapters = []
+        self.detail_content = detail_content
 
     def add_chapter(self, chapter):
         self.chapters.append(chapter)
@@ -16,6 +17,7 @@ class Manga:
         print(f'{ "Author:".ljust(15) } {self.author}')
         print(f'{ "Status:".ljust(15) } {self.status}')
         print(f'{ "Chapters:".ljust(15) } {len(self.chapters)}')
+        print(f'{ "Detail content:".ljust(15) } {self.detail_content}')
 
     def __str__(self) -> str:
         return f'Manga: {self.name}, URL: {self.url_link}, Author: {self.author}, Display Name: {self.display_name}, ' \

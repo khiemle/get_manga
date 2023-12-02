@@ -49,7 +49,8 @@ for chapter in manga.chapters[start_index:end_index+1]:
         image_folder=chapter_dir,
         output_path=f'{chapter_dir}.pdf',
         thumbnail_path=thumbnail,
-        author=manga.author
+        author=manga.author,
+        detail_content=manga.detail_content
     )
     OU.delete_directory(chapter_dir)
     print(f'finished chapter {chapter.id}')

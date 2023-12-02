@@ -1,9 +1,6 @@
 import pdfkit
 import os
 
-import pdfkit
-import os
-
 # Configure pdfkit options (equivalent to Kotlin settings)
 options = {
     'orientation': 'Portrait',
@@ -28,9 +25,9 @@ def create_pdf_by_lib(lst_images, pdf_name):
 
     print("Done")
 
-def create_pdf_with_images(top_left, top_right, image_folder, output_path, thumbnail_path=None, author=None):
+def create_pdf_with_images(top_left, top_right, image_folder, output_path, thumbnail_path=None, author=None, detail_content=None):
     # Create a new HTML string with images
-    html_content = generate_html_with_images_v2(manga_name=top_left, chapter_name=top_right, image_folder=image_folder, thumbnail_path=thumbnail_path, author=author)
+    html_content = generate_html_with_images_v2(manga_name=top_left, chapter_name=top_right, image_folder=image_folder, thumbnail_path=thumbnail_path, author=author, detail_content=detail_content)
 
     # Generate PDF from HTML content
     pdfkit.from_string(html_content, output_path, options=options)
@@ -57,7 +54,7 @@ def generate_html_with_images(image_folder):
 
     return html_content
 
-def generate_html_with_images_v2(manga_name, chapter_name, image_folder, thumbnail_path=None, author = None):
+def generate_html_with_images_v2(manga_name, chapter_name, image_folder, thumbnail_path=None, author = None, detail_content=None):
     # Get a list of image files in the specified folder
     image_files = [f for f in os.listdir(image_folder) if f.endswith(('.jpg', '.jpeg', '.png'))]
 
@@ -75,7 +72,10 @@ def generate_html_with_images_v2(manga_name, chapter_name, image_folder, thumbna
                 f'  <div style="font-size: 14px; font-weight: bold;">{manga_name}</div>' \
                 f'  {author_tag}' \
                 f'  <div style="width: 100%; height: 20px;"></div>' \
+                f'  <div style="width: 80%; font-size: 14px; font-weight: bold; margin: 0 auto; display: flex; align-items: center;">{detail_content}</div>' \
+                f'  <div style="width: 100%; height: 20px;"></div>' \
                 f'  <div style="font-size: 14px; font-weight: bold;">{chapter_name}</div>' \
+                f'  <div style="width: 100%; height: 20px;"></div>' \
                 f'  <div style="font-size: 14px; font-weight: bold;">Pdf created by JQKA</div>' \
                 f'</div>'
 

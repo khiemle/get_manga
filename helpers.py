@@ -56,6 +56,7 @@ def get_manga(url) -> Manga:
     status = SU.get_text_by_xpath(driver=driver, xpath="//li[@class='status row']//p[@class='col-xs-8']")
     display_name = SU.get_text_by_xpath(driver=driver, xpath="//h1[@class='title-detail']")
     thumbnail_url = SU.get_attribute_by_xpath(driver=driver, xpath="//div[@class='col-xs-4 col-image']//img", attribute="src")
+    detail_content = SU.get_text_by_xpath(driver=driver, xpath="//div[@class='detail-content']//p")
 
     # Find elements with the specified XPath
     containers = driver.find_elements(by="xpath", value="//div[@class='col-xs-5 chapter']")
@@ -64,7 +65,13 @@ def get_manga(url) -> Manga:
     # href_list = [container.find_element(by="xpath", value="./a").get_attribute("href") for container in containers]
 
     # Create a Manga object
-    manga = Manga(name=CU.get_manga_name_from_url(url), url_link=url, author=author, status=status, display_name=display_name, thumbnail_url=thumbnail_url)
+    manga = Manga(name=CU.get_manga_name_from_url(url), 
+                  url_link=url, 
+                  author=author, 
+                  status=status, 
+                  display_name=display_name, 
+                  thumbnail_url=thumbnail_url,
+                  detail_content=detail_content)
 
     # Extract and add Chapter objects to the Manga
     for container in containers:
