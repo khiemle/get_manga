@@ -8,6 +8,16 @@ Lock the version of those packages:
 pip freeze > requirements.txt
 ```
 
+## Notes
+
+If got message "error: externally-managed-environment". Run those command
+
+```
+python3 -m venv path/to/venv
+source path/to/venv/bin/activate
+python3 -m pip install pytube
+```
+
 ## Get Chrome WebDriver 
 
 https://getwebdriver.com/chromedriver#stable
