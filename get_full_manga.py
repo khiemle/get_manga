@@ -3,7 +3,11 @@ import utils.ebook_utils as EU
 import utils.network_utils as NU
 from configs.nettruyenus_config import HEADERS as NetTruyenUsHeaders
 import helpers 
+import os
+import sys
 
+application_path = os.path.dirname(sys.executable)
+print(application_path)
 # Get manga URL from the user
 url = input("Enter the URL of the manga: ")
 
