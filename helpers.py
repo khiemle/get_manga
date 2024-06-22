@@ -40,23 +40,14 @@ def get_pages_of_chapter(url) -> List[Page]:
 
 
     # Find elements with the specified XPath
-    containers = driver.find_elements(by="xpath", value=source_config.pages_container_xpath)
+    imgs = driver.find_elements(by="xpath", value=source_config.pages_container_xpath)
 
     pageList = []
-    if (len(containers) == 1):
-        imgs = containers[0].find_elements(by="xpath", value="./img")
-        for index, img in enumerate(imgs):
-            srcs = [img.get_attribute(attr) for attr in source_config.img_src_list]
-            src = next((src for src in srcs if src is not None), None)
-            number = f'page_{index}'
-            pageList.append(Page(src, number))
-    else:
-        for index,container in enumerate(containers):
-            img_element = container.find_element(by="xpath", value="./img")
-            srcs = [img_element.get_attribute(attr) for attr in source_config.img_src_list]
-            src = next((src for src in srcs if src is not None), None)
-            number = f'page_{index}'
-            pageList.append(Page(src, number))
+    for index,img_element in enumerate(imgs):
+        srcs = [img_element.get_attribute(attr) for attr in source_config.img_src_list]
+        src = next((src for src in srcs if src is not None), None)
+        number = f'page_{index}'
+        pageList.append(Page(src, number))
 
     # Quit the WebDriver
     driver.quit()
