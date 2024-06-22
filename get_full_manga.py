@@ -34,7 +34,15 @@ OU.create_manga_folder(manga)
 
 thumbnail_file_name = "thumbnail.jpg"
 
-work_dir = f'/Users/khle/Workspace/Projects/py_auto/workspace/{manga.name}'
+# Get the directory of the current script
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Construct the work_dir path dynamically
+work_dir = os.path.join(current_dir, 'workspace', manga.name)
+
+# Create the directory if it doesn't exist
+os.makedirs(work_dir, exist_ok=True)
+
 thumbnail = f'{work_dir}/{thumbnail_file_name}'
 NU.download_image(manga.thumbnail_url, save_path=thumbnail, headers=NetTruyenUsHeaders)
 

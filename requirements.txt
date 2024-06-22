@@ -1,0 +1,3 @@
+pdfkit
+selenium  # Assuming selenium is used in selenium_utils.py
+requests  # Commonly used for network operations, assuming it's used in network_utils.py

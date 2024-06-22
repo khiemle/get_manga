@@ -2,6 +2,7 @@ import requests
 from configs.nettruyenus_config import HEADERS as NetTruyenUsHeaders
 
 def download_image(image_link, save_path="image.jpg", headers=NetTruyenUsHeaders):
+    print(f"Downloading image from {image_link} to {save_path}")
     # Send a GET request to the image URL
     response = requests.get(image_link, headers=headers)
 
