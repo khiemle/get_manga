@@ -90,6 +90,7 @@ def get_manga(url) -> Manga:
         chapter_url = container.find_element(by="xpath", value="./a").get_attribute("href")
         chapter = Chapter(id=CU.get_chapter_id_from_url(chapter_url),name=chapter_name, url_link=chapter_url)
         manga.add_chapter(chapter)
+    manga.chapters.reverse()
 
     manga.print_manga_details()
 
