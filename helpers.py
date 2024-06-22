@@ -94,7 +94,7 @@ def get_manga(url) -> Manga:
     return manga
 
 def process_chapter(chapter, work_dir, download_images=True):
-    chapter_dir = os.path.join(work_dir, f"chapter_{chapter.id}")
+    chapter_dir = os.path.join(work_dir, f"{chapter.id}")
     os.makedirs(chapter_dir, exist_ok=True)
 
     for page in chapter.pages:
@@ -102,7 +102,7 @@ def process_chapter(chapter, work_dir, download_images=True):
         image_filename = f'{page.number}.jpg'
         image_path = os.path.join(chapter_dir, image_filename)
 
-        if download_images:
+        if download_images and image_url is not None:
             NU.download_image(image_url, image_path)
         else:
             print(f'  Image URL for page {page.number}: {image_url}')

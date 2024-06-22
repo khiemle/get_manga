@@ -40,8 +40,6 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 # Construct the work_dir path dynamically
 work_dir = os.path.join(current_dir, 'workspace', manga.name)
 
-# Create the directory if it doesn't exist
-os.makedirs(work_dir, exist_ok=True)
 
 thumbnail = f'{work_dir}/{thumbnail_file_name}'
 NU.download_image(manga.thumbnail_url, save_path=thumbnail, headers=NetTruyenUsHeaders)
@@ -57,7 +55,7 @@ print(f'Download and create pdf...')
 for chapter in manga.chapters[start_index:end_index+1]:
     helpers.process_chapter(chapter, work_dir, download_images=True)
     print(f' Downloaded {len(chapter.pages)} images of Chapter {chapter.id}')
-    chapter_dir = f'{work_dir}/chapter_{chapter.id}'
+    chapter_dir = f'{work_dir}/{chapter.id}'
     EU.create_pdf_with_images(
         top_left=manga.display_name,
         top_right=chapter.name,
