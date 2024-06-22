@@ -21,9 +21,6 @@ def getChaptersAndCreatePDF(work_dir, manga, start_index, end_index):
         pages = helpers.get_pages_of_chapter(url=chapter.url_link)
         chapter.add_pages(pages)
         print(f' Finished chapter {chapter.id}')
-
-    print(f'Download and create pdf...')
-    for chapter in manga.chapters[start_index:end_index+1]:
         helpers.process_chapter(chapter, work_dir, download_images=True)
         print(f' Downloaded {len(chapter.pages)} images of Chapter {chapter.id}')
         chapter_dir = f'{work_dir}/{chapter.id}'
@@ -39,7 +36,6 @@ def getChaptersAndCreatePDF(work_dir, manga, start_index, end_index):
         print(f' PDF created at: {chapter_dir}.pdf')
         OU.delete_directory(chapter_dir)
         print(f' Deleted all downloaded images in {chapter_dir} of {chapter.id}')
-
 
 if __name__ == "__main__":
 
@@ -59,8 +55,12 @@ if __name__ == "__main__":
 
     # Get user input for start and end indices
     if len(sys.argv) > 3:
-        start_index = int(sys.argv[2])
-        end_index = int(sys.argv[3])
+        if sys.argv[2] == 'all':
+            start_index = 0
+            end_index = len(manga.chapters) - 1
+        else:
+            start_index = int(sys.argv[2])
+            end_index = int(sys.argv[3])
     else:
         start_index = int(input("Enter the start index of the chapter: "))
         end_index = int(input("Enter the end index of the chapter: "))
@@ -69,9 +69,13 @@ if __name__ == "__main__":
     if not 0 <= start_index < len(manga.chapters) or not 0 <= end_index < len(manga.chapters):
         print("Invalid indices. Exiting.")
         exit()
+    
+    output_dir_index_param = 4
+    if len(sys.argv) > 2 and sys.argv[2] == 'all':
+        output_dir_index_param = 3
 
-    if len(sys.argv) > 4:
-        work_dir = sys.argv[4]
+    if len(sys.argv) > output_dir_index_param:
+        work_dir = sys.argv[output_dir_index_param]
     else:
         # Get the directory of the current script
         current_dir = os.path.dirname(os.path.abspath(__file__))
