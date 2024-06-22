@@ -34,7 +34,12 @@ def get_pages_of_chapter(url) -> List[Page]:
 
     pageList = []
     for index,container in enumerate(containers):
-        src = container.find_element(by="xpath", value="./img").get_attribute("src")
+        img_element = container.find_element(by="xpath", value="./img")
+        src = (img_element.get_attribute("src") or 
+           img_element.get_attribute("data-sv1") or 
+           img_element.get_attribute("data-sv2") or 
+           img_element.get_attribute("data-src"))
+        print(f"Page {index}: {src}")
         number = f'page_{index}'
         pageList.append(Page(src, number))
 
