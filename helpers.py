@@ -12,8 +12,18 @@ import utils.network_utils as NU
 import utils.common_utils as CU
 import utils.selenium_utils as SU
 from typing import List
+from configs.source_configs import source_configs
 
 def get_pages_of_chapter(url) -> List[Page]:
+    source_config = None
+    for config in source_configs:
+        if url.startswith(config.main_page_url):
+            source_config = config
+            break
+
+    if not source_config:
+        raise ValueError("URL does not match any source configuration.")
+    
     options = Options()
     options.headless = True
     options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
@@ -26,22 +36,27 @@ def get_pages_of_chapter(url) -> List[Page]:
     driver.get(url)
 
     # Wait for the elements to be present
-    WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, "//div[@class='page-chapter']")))
+    WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, source_config.pages_container_xpath)))
 
 
     # Find elements with the specified XPath
-    containers = driver.find_elements(by="xpath", value="//div[@class='page-chapter']")
+    containers = driver.find_elements(by="xpath", value=source_config.pages_container_xpath)
 
     pageList = []
-    for index,container in enumerate(containers):
-        img_element = container.find_element(by="xpath", value="./img")
-        src = (img_element.get_attribute("src") or 
-           img_element.get_attribute("data-sv1") or 
-           img_element.get_attribute("data-sv2") or 
-           img_element.get_attribute("data-src"))
-        print(f"Page {index}: {src}")
-        number = f'page_{index}'
-        pageList.append(Page(src, number))
+    if (len(containers) == 1):
+        imgs = containers[0].find_elements(by="xpath", value="./img")
+        for index, img in enumerate(imgs):
+            srcs = [img.get_attribute(attr) for attr in source_config.img_src_list]
+            src = next((src for src in srcs if src is not None), None)
+            number = f'page_{index}'
+            pageList.append(Page(src, number))
+    else:
+        for index,container in enumerate(containers):
+            img_element = container.find_element(by="xpath", value="./img")
+            srcs = [img_element.get_attribute(attr) for attr in source_config.img_src_list]
+            src = next((src for src in srcs if src is not None), None)
+            number = f'page_{index}'
+            pageList.append(Page(src, number))
 
     # Quit the WebDriver
     driver.quit()
@@ -49,6 +64,14 @@ def get_pages_of_chapter(url) -> List[Page]:
     return pageList
 
 def get_manga(url) -> Manga:
+    source_config = None
+    for config in source_configs:
+        if url.startswith(config.main_page_url):
+            source_config = config
+            break
+
+    if not source_config:
+        raise ValueError("URL does not match any source configuration.")
     options = Options()
     options.headless = True
     options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
@@ -61,16 +84,16 @@ def get_manga(url) -> Manga:
     driver.get(url)
 
     # Wait for the elements to be present
-    WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, "//div[@class='col-xs-5 chapter']")))
+    WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, source_config.chapters_container_xpath)))
 
-    author = SU.get_text_by_xpath(driver=driver, xpath="//li[@class='author row']//a")
-    status = SU.get_text_by_xpath(driver=driver, xpath="//li[@class='status row']//p[@class='col-xs-8']")
-    display_name = SU.get_text_by_xpath(driver=driver, xpath="//h1[@class='title-detail']")
-    thumbnail_url = SU.get_attribute_by_xpath(driver=driver, xpath="//div[@class='col-xs-4 col-image']//img", attribute="src")
-    detail_content = SU.get_text_by_xpath(driver=driver, xpath="//div[@class='detail-content']//p")
+    author = SU.get_text_by_xpath(driver=driver, xpath=source_config.author_xpath)
+    status = SU.get_text_by_xpath(driver=driver, xpath=source_config.status_xpath)
+    display_name = SU.get_text_by_xpath(driver=driver, xpath=source_config.display_name_xpath)
+    thumbnail_url = SU.get_attribute_by_xpath(driver=driver, xpath=source_config.thumbnail_url_img_xpath, attribute="src")
+    detail_content = SU.get_text_by_xpath(driver=driver, xpath=source_config.detail_content_xpath)
 
     # Find elements with the specified XPath
-    containers = driver.find_elements(by="xpath", value="//div[@class='col-xs-5 chapter']")
+    containers = driver.find_elements(by="xpath", value=source_config.chapters_container_xpath)
 
     # Extract href values
     # href_list = [container.find_element(by="xpath", value="./a").get_attribute("href") for container in containers]

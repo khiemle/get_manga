@@ -1,7 +1,7 @@
 import utils.os_utils as OU
 import utils.ebook_utils as EU
 import utils.network_utils as NU
-from configs.nettruyenus_config import HEADERS as NetTruyenUsHeaders
+from configs.nettruyenviet_config import HEADERS as NetTruyenUsHeaders
 import helpers 
 import os
 import sys

@@ -1,5 +1,5 @@
 import requests
-from configs.nettruyenus_config import HEADERS as NetTruyenUsHeaders
+from configs.nettruyenviet_config import HEADERS as NetTruyenUsHeaders
 
 def download_image(image_link, save_path="image.jpg", headers=NetTruyenUsHeaders):
     print(f"Downloading image from {image_link} to {save_path}")
